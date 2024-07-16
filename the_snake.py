@@ -52,9 +52,6 @@ class GameObject:
     def draw(self):
         pass
 
-    def __str__(self) -> str:
-        pass
-
 
 class Apple(GameObject):
     """Объект Яблока"""
@@ -71,9 +68,6 @@ class Apple(GameObject):
 
     def randomize_position(self):
         self.position = (randrange(0, 620, GRID_SIZE), randrange(0, 460, GRID_SIZE))
-
-    def __str__(self) -> str:
-        pass
 
 
 class Snake(GameObject):
@@ -98,6 +92,11 @@ class Snake(GameObject):
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
         global clock
         clock = pygame.time.Clock()
+        with open('best_result.txt', 'r', encoding='utf-8') as file:
+            result = int(file.read())
+        if result < self.lenght:
+            with open('best_result.txt', 'w', encoding='utf-8') as file:
+                file.write(f'{self.lenght}')
         self.__init__()
         pygame.init()
 
@@ -147,6 +146,10 @@ class Snake(GameObject):
             return True
         return False
 
+    def collision_check(self):
+        if self.get_head_position() in self.positions[1:]:
+            self.reset()
+
     def check_abroad(self):
         head_x, head_y = self.get_head_position()
         if head_x < 0 and self.direction == LEFT:
@@ -157,9 +160,6 @@ class Snake(GameObject):
             self.positions[0] = (head_x, 460)
         if head_y == SCREEN_HEIGHT and self.direction == DOWN:
             self.positions[0] = (head_x, 0)
-
-    def __str__(self) -> str:
-        pass
 
 
 def handle_keys(game_object):
@@ -191,9 +191,11 @@ def main():
         snake.update_direction()
         snake.move()
         snake.check_abroad()
+        snake.collision_check()
+        # Позже сделаю камни и буду передават в статичный метод объект ...
+        # ... камней и проверять на столкновение с ними.
         if snake.eat_an_apple(snake, apple):
             apple.randomize_position()
-        # проверка столконовения змейки с собой (можно попробовать написать статик-метод, внутри класса змейки), если да, то метод reset()
         snake.draw()
         apple.draw()
         pygame.display.update()
