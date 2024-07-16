@@ -1,37 +1,52 @@
 import pygame
 from gameparts import *
 
-
-def handle_keys(game_object):
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            raise SystemExit
-        elif event.type == pygame.KEYDOWN:
-            if game_object.direction != COMMANDS[event.key][1]:
-                game_object.next_direction = COMMANDS[event.key][0]
-
-
 def main():
+    """Игра Змейка
+    Задача игры:
+    Управляя змейкой, направлять ее на яблоки, красного цвета. С каждым
+    съеденным яблоком, змейка увеличивается на одну секцию.
+    Логика:
+    Инициализирутся игровое поле с заданными параметрами
+    Инициализируются два объекта - змейка Олег и яблоко Рудольф
+    Далее запускается цикл, обрабатывающий все события игры и обновляющий
+    игровое поле.
+    События:
+    Задается заранее установленная скорость игры
+    Считывается команда для змейки
+    При необходимости обновляется направление следования змейки
+    Движение змейки
+    Контроль выхода змейки за границы игрового поля
+    Контроль столкновения змейки с хвостом
+    Контроль поедания яблок и увеличение змейки на одну секцию
+    В случае поедания яблока, генерация нового яблока на игровом поле
+    Отрисовка обновленных координат яблока и змейки
+    Обновление игрового поля
+    Скрытые события:
+    При столкновении с хвостом, игра перезапускается, значение длины змейки
+    обнуляется, а результат игры, в случае если он является лучшим,
+    сохраняется в отдельном файле best_result.txt
+    ПРИЯТНОЙ ИГРЫ!
+    """
+    
     pygame.init()
     apple_rudolf = Apple()
     snake_oleg = Snake()
 
     while True:
-        clock.tick(SPEED)  # Установка скорости. В планах опциональное увеличение.
-        handle_keys(snake_oleg)  # Считываем команду с клавиатуры
-        snake_oleg.update_direction()  # Устанавливаем считанное направление
-        snake_oleg.move()  # Двигаем змея
-        snake_oleg.check_abroad()  # Контролируем выход за границу поля
-        snake_oleg.collision_check()  # Контролируем столкновение с хвостом
-        # Позже сделаю камни и буду передават в статичный метод объект ...
-        # ... камней и проверять на столкновение с ними.
-        if snake_oleg.eat_an_apple(snake_oleg, apple_rudolf):  # Контроль поедания яблок
-            apple_rudolf.randomize_position()  # Если съедаем - генерируем новое
-        snake_oleg.draw()  # Рисуем Олега
-        apple_rudolf.draw()  # Рисуем Рудольфа
-        pygame.display.update()  # Обновляем экран
-
+        clock.tick(SPEED)
+        handle_keys(snake_oleg)
+        snake_oleg.update_direction()
+        snake_oleg.move()
+        snake_oleg.check_abroad() 
+        snake_oleg.collision_check()
+        if snake_oleg.eat_an_apple(snake_oleg, apple_rudolf):
+            apple_rudolf.randomize_position()
+        snake_oleg.draw()
+        apple_rudolf.draw()
+        pygame.display.update()
+        
 
 if __name__ == '__main__':
     main()
+    
