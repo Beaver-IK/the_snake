@@ -72,9 +72,11 @@ class GameObject:
     def draw(self):
         """Метод отрисовки. Будет переопределен в наследных классах."""
         pass
-    
+
+    @staticmethod
     def draw_rect(position, size=GRID_SIZE):
-        return pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+        """Отрисовка ячейки"""
+        return pygame.Rect(position, (size, size))
 
 
 class Apple(GameObject):
@@ -217,10 +219,6 @@ def handle_keys(game_object):
                 game_object.next_direction = COMMANDS[event.key][0]
 
 
-def draw_rect(coordinats: tuple, size=GRID_SIZE):
-    return 
-
-
 def main():
     """Игра Змейка
     Задача игры:
@@ -250,8 +248,6 @@ def main():
     pygame.init()
     apple_rudolf = Apple()
     snake_oleg = Snake()
-    
-    print(type(snake_oleg))
 
     while True:
         clock.tick(SPEED)
