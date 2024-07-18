@@ -66,17 +66,17 @@ class GameObject:
     position: tuple = CENTER_FILD
     body_color: tuple = ()
 
-    def __init__(self):
-        pass
-
     def draw(self):
         """Метод отрисовки. Будет переопределен в наследных классах."""
         pass
 
     @staticmethod
-    def draw_rect(position, size=GRID_SIZE):
+    def draw_rect(color, position, border=True):
         """Отрисовка ячейки"""
-        return pygame.Rect(position, (size, size))
+        rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, color, rect)
+        if border:
+            pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
 
 class Apple(GameObject):
@@ -98,9 +98,7 @@ class Apple(GameObject):
 
     def draw(self):
         """Функция отрисовки яблока на игровом поле."""
-        rect = GameObject.draw_rect(self.position)
-        pygame.draw.rect(screen, self.body_color, rect)
-        pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+        GameObject.draw_rect(self.body_color, self.position)
 
     @staticmethod
     def randomize_position(self, snake, game_coordinats: set):
@@ -162,17 +160,16 @@ class Snake(GameObject):
     def draw(self):
         """Отрисовывает змейку на экране, затирая след."""
         for position in self.positions[:-1]:
-            rect = GameObject.draw_rect(position)
-            pygame.draw.rect(screen, self.body_color, rect)
-            pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+            GameObject.draw_rect(self.body_color, position)
 
-        head_rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, self.body_color, head_rect)
-        pygame.draw.rect(screen, BORDER_COLOR, head_rect, 1)
+        GameObject.draw_rect(self.body_color, self.positions[0])
 
         if self.last:
-            last_rect = GameObject.draw_rect(self.last)
-            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+            GameObject.draw_rect(
+                BOARD_BACKGROUND_COLOR,
+                self.last,
+                border=False
+            )
 
     def get_head_position(self):
         """Возвращает позицию головы змейки."""
